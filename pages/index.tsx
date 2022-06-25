@@ -39,9 +39,7 @@ const Home: NextPage = () => {
 
     const { data } = await create.post('/', { url, slug });
 
-    const fullSlug = process.env.VERCEL_URL
-      ? `${process.env.VERCEL_URL}/${data.slug}`
-      : `http://localhost:${process.env.PORT ?? 3000}/${data.slug}`;
+    const fullSlug = `${window.location.origin}/${data.slug}`;
 
     setSlug(fullSlug);
     reset();
