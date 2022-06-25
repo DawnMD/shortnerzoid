@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useEffect, useState } from 'react';
 import create from '../api/create';
+import { getBaseUrl } from '../utils/getbaseUrl';
 
 type UrlInput = {
   url: string;
@@ -39,7 +40,7 @@ const Home: NextPage = () => {
 
     const { data } = await create.post('/', { url, slug });
 
-    const fullSlug = `${window.location.origin}/${data.slug}`;
+    const fullSlug = `${getBaseUrl()}/${data.slug}`;
 
     setSlug(fullSlug);
     reset();
