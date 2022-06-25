@@ -12,6 +12,8 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   const slugFetch = await fetch(`${req.nextUrl.origin}/api/get-link/${slug}`);
 
+  console.log(`${req.nextUrl.origin}/api/get-link/${slug}`);
+
   console.log(slugFetch.status);
 
   if (slugFetch.status === 404) {
