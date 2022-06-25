@@ -117,9 +117,7 @@ const Home: NextPage = () => {
           <div className='relative'>
             <div className='absolute inset-0 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 blur opacity-60'></div>
             <div className='relative max-w-xs px-4 py-2 overflow-x-auto text-xl rounded-lg text-zinc-100 bg-zinc-900 md:max-w-none'>
-              {process.env.VERCEL_URL
-                ? `${process.env.VERCEL_URL}/${slug}`
-                : `http://localhost:${process.env.PORT ?? 3000}/${slug}`}
+              {slug}
             </div>
           </div>
           <div className='flex flex-col divide-y-2 divide-zinc-100 divide-opacity-40 md:divide-y-0 md:divide-x-2 md:flex-row'>
