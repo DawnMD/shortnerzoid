@@ -4,6 +4,7 @@ import { prisma } from '../../../utils/db';
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const slug = req.query['slug'];
 
+  console.log(req);
   if (!slug || typeof slug !== 'string') {
     res.statusCode = 404;
 
@@ -19,8 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
   });
-
-  console.log(data);
 
   if (!data) {
     res.statusCode = 404;
