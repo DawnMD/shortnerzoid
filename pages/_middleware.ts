@@ -14,11 +14,11 @@ export default async function middleware(req: NextRequest) {
   const slugFetch = await fetch(`${req.nextUrl.origin}/api/get-link/${slug}`);
 
   if (slugFetch.status === 404) {
-    return NextResponse.rewrite(req.nextUrl.origin);
+    return NextResponse.redirect(req.nextUrl.origin);
   }
   const data = await slugFetch.json();
 
   if (data?.url) {
-    return NextResponse.rewrite(data.url);
+    return NextResponse.redirect(data.url);
   }
 }
