@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export default async function middleware(req: NextRequest, res: NextResponse) {
-  if (
-    req.nextUrl.pathname === '/' ||
-    req.nextUrl.pathname.startsWith('/api/') ||
-    req.nextUrl.pathname.includes('/favicon.ico')
-  ) {
-    return;
-  }
+  // if (
+  //   req.nextUrl.pathname === '/' ||
+  //   req.nextUrl.pathname.startsWith('/api/') ||
+  //   req.nextUrl.pathname.includes('/favicon.ico')
+  // ) {
+  //   return;
+  // }
 
   const slug = req.nextUrl.pathname.split('/').pop();
 
@@ -17,12 +17,12 @@ export default async function middleware(req: NextRequest, res: NextResponse) {
 
   console.log(slugFetch);
 
-  if (slugFetch.status === 404) {
-    return NextResponse.redirect(req.nextUrl.origin);
-  }
-  const data = await slugFetch.json();
+  // if (slugFetch.status === 404) {
+  //   return NextResponse.redirect(req.nextUrl.origin);
+  // }
+  // const data = await slugFetch.json();
 
-  if (data?.url) {
-    return NextResponse.redirect(data.url);
-  }
+  // if (data?.url) {
+  //   return NextResponse.redirect(data.url);
+  // }
 }
