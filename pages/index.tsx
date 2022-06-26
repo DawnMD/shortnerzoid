@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useEffect, useState } from 'react';
-import create from '../api/create';
+import create from '../endpoint/create';
 
 type UrlInput = {
   url: string;
