@@ -20,6 +20,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
+  console.log(data);
+
   if (!data) {
     res.statusCode = 404;
 
