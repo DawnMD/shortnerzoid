@@ -4,6 +4,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useEffect, useState } from 'react';
 import create from '../endpoint/create';
+import { getStat } from '../endpoint/getStat';
+import useSWR from 'swr';
+import CountUp from 'react-countup';
 
 type UrlInput = {
   url: string;
@@ -24,6 +27,8 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState('');
   const [copy, setCopy] = useState(false);
+
+  const { data: linkCounter } = useSWR('/api/get-stat', getStat);
 
   const {
     register,
@@ -66,7 +71,7 @@ const Home: NextPage = () => {
   }, [copy]);
 
   return (
-    <div>
+    <div className='flex flex-col items-center gap-8'>
       {slug === '' ? (
         <form className='flex flex-col gap-2' onSubmit={handleSubmit(onSubmit)}>
           <p className='text-red-400'>{errors.url?.message}</p>
@@ -165,6 +170,15 @@ const Home: NextPage = () => {
               Create another
             </button>
           </div>
+        </div>
+      )}
+      {linkCounter && (
+        <div className='flex flex-col items-center gap-4 mt-8'>
+          <p className='text-3xl font-bold text-zinc-100'>Link Shortened</p>
+          <CountUp
+            end={linkCounter.total}
+            className='text-5xl font-medium text-zinc-100'
+          />
         </div>
       )}
     </div>
