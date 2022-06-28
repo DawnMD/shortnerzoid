@@ -27,6 +27,9 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState('');
   const [copy, setCopy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log(error);
 
   const { data: linkCounter } = useSWR('/api/get-stat', getStat);
 
@@ -42,12 +45,18 @@ const Home: NextPage = () => {
   const onSubmit: SubmitHandler<UrlInput> = async ({ url, slug }) => {
     setLoading(true);
 
-    const { data } = await create.post('/', { url, slug });
+    const { data } = await create.post<{
+      slug: string;
+      message?: string;
+    }>('/', { url, slug });
 
-    const fullSlug = `${window.location.origin}/${data.slug}`;
-
-    setSlug(fullSlug);
-    reset();
+    if (data.message) {
+      setError(data.message);
+    } else {
+      const fullSlug = `${window.location.origin}/${data.slug}`;
+      setSlug(fullSlug);
+      reset();
+    }
     setLoading(false);
   };
 
@@ -58,6 +67,10 @@ const Home: NextPage = () => {
 
   const goBack = () => {
     setSlug('');
+    if (error) {
+      reset();
+      setError(null);
+    }
   };
 
   useEffect(() => {
@@ -72,7 +85,7 @@ const Home: NextPage = () => {
 
   return (
     <div className='flex flex-col items-center gap-8'>
-      {slug === '' ? (
+      {slug === '' && error === null ? (
         <form className='flex flex-col gap-2' onSubmit={handleSubmit(onSubmit)}>
           <p className='text-red-400'>{errors.url?.message}</p>
           <div className='flex flex-col gap-8 md:flex-row md:items-center'>
@@ -122,48 +135,50 @@ const Home: NextPage = () => {
           <div className='relative'>
             <div className='absolute inset-0 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 blur opacity-60'></div>
             <div className='relative max-w-xs px-4 py-2 overflow-x-auto text-xl rounded-lg text-zinc-100 bg-zinc-900 md:max-w-none'>
-              {slug}
+              {typeof error === 'string' ? error : slug}
             </div>
           </div>
           <div className='flex flex-col divide-y-2 divide-zinc-100 divide-opacity-40 md:divide-y-0 md:divide-x-2 md:flex-row'>
-            <button
-              className={`flex items-center justify-center gap-4 pb-4 md:pb-0 md:pr-4 ${
-                copy ? 'text-purple-600' : 'text-pink-600'
-              }`}
-              onClick={onCopyClipboard}>
-              {copy ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-6 h-6'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  strokeWidth={2}>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-6 h-6'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  strokeWidth={2}>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3'
-                  />
-                </svg>
-              )}
-              <span className='text-lg font-medium'>
-                {copy ? 'Copied' : 'Copy to Clipboard'}
-              </span>
-            </button>
+            {error === null && (
+              <button
+                className={`flex items-center justify-center gap-4 pb-4 md:pb-0 md:pr-4 ${
+                  copy ? 'text-purple-600' : 'text-pink-600'
+                }`}
+                onClick={onCopyClipboard}>
+                {copy ? (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-6 h-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    strokeWidth={2}>
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-6 h-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    strokeWidth={2}>
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3'
+                    />
+                  </svg>
+                )}
+                <span className='text-lg font-medium'>
+                  {copy ? 'Copied' : 'Copy to Clipboard'}
+                </span>
+              </button>
+            )}
             <button
               onClick={goBack}
               className='pt-4 text-lg font-medium text-zinc-100 md:pt-0 md:pl-4'>
@@ -176,6 +191,7 @@ const Home: NextPage = () => {
         <div className='flex flex-col items-center gap-4 mt-8'>
           <p className='text-3xl font-bold text-zinc-100'>Link Shortened</p>
           <CountUp
+            startVal={0}
             end={linkCounter.total}
             className='text-5xl font-medium text-zinc-100'
           />
