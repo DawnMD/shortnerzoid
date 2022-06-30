@@ -24,18 +24,6 @@ export default async (
 
   const hash = slug ? slug : nanoid();
 
-  const existsUrl = await prisma.shortLink.findFirst({
-    where: {
-      url: {
-        equals: url,
-      },
-    },
-  });
-
-  if (existsUrl) {
-    return res.json({ slug: existsUrl.slug });
-  }
-
   const existSlug = await prisma.shortLink.findFirst({
     where: {
       slug: {
