@@ -29,8 +29,6 @@ const Home: NextPage = () => {
   const [copy, setCopy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(error);
-
   const { data: linkCounter } = useSWR('/api/get-stat', getStat);
 
   const {
